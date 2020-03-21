@@ -34,6 +34,10 @@ def define_G(input_nc, output_nc, ngf, netG, n_downsample_global=3, n_blocks_glo
                                   n_local_enhancers, n_blocks_local, norm_layer)
     elif netG == 'encoder':
         netG = Encoder(input_nc, output_nc, ngf, n_downsample_global, norm_layer)
+    elif netG == "unet":
+        from models.unet.unet_model import UNet
+        netG = UNet(n_channels=3, n_classes=3, conv_type="normal", norm_type="batch")
+        netG.set_config(256, "stable", 1.0)
     else:
         raise('generator not implemented!')
     print(netG)

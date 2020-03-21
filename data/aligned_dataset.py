@@ -2,6 +2,7 @@ import os.path
 from data.base_dataset import BaseDataset, get_params, get_transform, normalize
 from data.image_folder import make_dataset
 from PIL import Image
+import torchvision.transforms as transforms
 
 class AlignedDataset(BaseDataset):
     def initialize(self, opt):
@@ -49,7 +50,12 @@ class AlignedDataset(BaseDataset):
         if self.opt.isTrain or self.opt.use_encoded_image:
             B_path = self.B_paths[index]   
             B = Image.open(B_path).convert('RGB')
-            transform_B = get_transform(self.opt, params)      
+            #transform_B = get_transform(self.opt, params)
+            transform_B = transforms.Compose([
+                          transforms.Resize((256, 256)),
+                          transforms.RandomHorizontalFlip(),
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
             B_tensor = transform_B(B)
 
         ### if using instance maps        
