@@ -39,7 +39,15 @@ class AlignedDataset(BaseDataset):
         A = Image.open(A_path)        
         params = get_params(self.opt, A.size)
         if self.opt.label_nc == 0:
-            transform_A = get_transform(self.opt, params)
+            #transform_A = get_transform(self.opt, params)
+            transform_A = transforms.Compose([
+                          transforms.Resize((int(256*1.1), int(256*1.1))),
+                          transforms.RandomRotation(3),
+                          transforms.RandomCrop(256),
+                          transforms.ColorJitter(hue=.05, saturation=.05),
+                          transforms.RandomHorizontalFlip(),
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
             A_tensor = transform_A(A.convert('RGB'))
         else:
             transform_A = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
